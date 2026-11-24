@@ -2,13 +2,13 @@ import { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { FlatList, StyleSheet } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import { captures } from './src/captures';
-import { couleurs, espace } from './src/theme';
-import Carte from './src/components/Carte';
-import EnTete from './src/components/EnTete';
-import Filtres from './src/components/Filtres';
+import { captures } from '../src/captures';
+import { couleurs, espace } from '../src/theme';
+import Carte from '../src/components/Carte';
+import EnTete from '../src/components/EnTete';
+import Filtres from '../src/components/Filtres';
 
-export default function App() {
+export default function Grille() {
   // La catégorie choisie dans la barre des filtres : 'tout' au départ
   const [filtre, setFiltre] = useState('tout');
 

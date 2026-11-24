@@ -1,0 +1,55 @@
+import { StyleSheet, Text, View } from 'react-native';
+import { Link, Stack, useLocalSearchParams } from 'expo-router';
+import { captures } from '../../src/captures';
+import { couleurs, espace, polices, tailles } from '../../src/theme';
+import Fiche from '../../src/components/Fiche';
+
+export default function Capture() {
+  // Pour /capture/3, id vaut '3' (du texte) : on compare donc en texte
+  const { id } = useLocalSearchParams();
+  const capture = captures.find(c => String(c.id) === String(id));
+
+  if (!capture) {
+    return (
+      <View style={styles.vide}>
+        <Stack.Screen options={{ title: 'Introuvable' }} />
+        <Text style={styles.titre}>Capture introuvable</Text>
+        <Text style={styles.texte}>Aucune capture ne porte le numéro {id}.</Text>
+        <Link href="/" style={styles.lien}>Retour à la grille</Link>
+      </View>
+    );
+  }
+
+  return (
+    <>
+      <Stack.Screen options={{ title: capture.titre }} />
+      <Fiche capture={capture} />
+    </>
+  );
+}
+
+const styles = StyleSheet.create({
+  vide: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: espace.m,
+    padding: espace.m,
+    backgroundColor: couleurs.fond,
+  },
+  titre: {
+    color: couleurs.texte,
+    fontFamily: polices.titre,
+    fontSize: tailles.grand,
+  },
+  texte: {
+    color: couleurs.texteDoux,
+    fontFamily: polices.texte,
+    fontSize: tailles.texte,
+  },
+  lien: {
+    color: couleurs.accent,
+    fontFamily: polices.texteGras,
+    fontSize: tailles.texte,
+  },
+});

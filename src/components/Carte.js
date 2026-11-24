@@ -1,23 +1,27 @@
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Link } from 'expo-router';
 import { couleurs, espace, polices, rayon, tailles } from '../theme';
 import Pastille from './Pastille';
 
 // La carte d'une capture : sa photo, sa catégorie, son titre, son lieu et sa date.
+// Toucher la carte ouvre sa fiche (/capture/<id>).
 const Carte = ({ capture }) => {
   return (
-    <View style={styles.carte}>
-      <View style={styles.cadre}>
-        <Image source={capture.image} style={styles.image} />
-      </View>
+    <Link href={`/capture/${capture.id}`} asChild>
+      <Pressable style={styles.carte}>
+        <View style={styles.cadre}>
+          <Image source={capture.image} style={styles.image} />
+        </View>
 
-      <View style={styles.contenu}>
-        <Pastille categorie={capture.categorie} />
-        <Text style={styles.titre}>{capture.titre}</Text>
-        <Text style={styles.infos}>
-          {capture.lieu} · {capture.date}
-        </Text>
-      </View>
-    </View>
+        <View style={styles.contenu}>
+          <Pastille categorie={capture.categorie} />
+          <Text style={styles.titre}>{capture.titre}</Text>
+          <Text style={styles.infos}>
+            {capture.lieu} · {capture.date}
+          </Text>
+        </View>
+      </Pressable>
+    </Link>
   );
 };
 
