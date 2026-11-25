@@ -40,3 +40,16 @@ export const lireCapture = async (id) => {
   }
   return memoire.find(c => String(c.id) === String(id)) ?? null;
 };
+
+// Bonus : la page suivante (Amorce en sert 24 par page).
+// Les nouvelles captures s'ajoutent à la mémoire ; derniere dit s'il en reste.
+export const lirePage = async (page) => {
+  const reponse = await fetch(`${BASE}/public/contributions?page=${page}`);
+  if (!reponse.ok) {
+    throw new Error(`Le serveur a répondu ${reponse.status}`);
+  }
+  const donnees = await reponse.json();
+  const nouvelles = donnees.items.map(traduire);
+  memoire = [...memoire, ...nouvelles];
+  return { captures: nouvelles, derniere: page >= donnees.pages };
+};

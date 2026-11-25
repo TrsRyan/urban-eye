@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { ActivityIndicator, FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import { lireCaptures } from '../src/api';
+import { lireCaptures, lirePage } from '../src/api';
 import { couleurs, espace, polices, tailles } from '../src/theme';
 import Carte from '../src/components/Carte';
 import EnTete from '../src/components/EnTete';
@@ -23,6 +23,37 @@ export default function Grille() {
     } catch (erreur) {
       console.log('Erreur :', erreur.message);
       setEtat('erreur');
+    }
+  };
+
+  // Bonus 1 : tirer la liste vers le bas pour la recharger
+  const [rafraichit, setRafraichit] = useState(false);
+  const rafraichir = async () => {
+    setRafraichit(true);
+    try {
+      setCaptures(await lireCaptures());
+      setPage(1);
+      setDerniere(false);
+    } catch (erreur) {
+      console.log('Erreur :', erreur.message);
+    }
+    setRafraichit(false);
+  };
+
+  // Bonus 2 : en bas de la liste, la page suivante
+  const [page, setPage] = useState(1);
+  const [derniere, setDerniere] = useState(false);
+  const suivante = async () => {
+    if (derniere || rafraichit) {
+      return;
+    }
+    try {
+      const resultat = await lirePage(page + 1);
+      setCaptures(avant => [...avant, ...resultat.captures]);
+      setPage(page + 1);
+      setDerniere(resultat.derniere);
+    } catch (erreur) {
+      console.log('Erreur :', erreur.message);
     }
   };
 
@@ -75,6 +106,10 @@ export default function Grille() {
             <Text style={styles.message}>Aucune capture dans cette catégorie.</Text>
           }
           renderItem={({ item }) => <Carte capture={item} />}
+          refreshing={rafraichit}
+          onRefresh={rafraichir}
+          onEndReached={suivante}
+          onEndReachedThreshold={0.5}
         />
         <StatusBar style="dark" />
       </SafeAreaView>
