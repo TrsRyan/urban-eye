@@ -1,15 +1,30 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { Link, Stack, useLocalSearchParams } from 'expo-router';
-import { captures } from '../../src/captures';
+import { lireCapture } from '../../src/api';
 import { couleurs, espace, polices, tailles } from '../../src/theme';
 import Fiche from '../../src/components/Fiche';
 
-export default function Capture() {
-  // Pour /capture/3, id vaut '3' (du texte) : on compare donc en texte
+export default function EcranCapture() {
   const { id } = useLocalSearchParams();
-  const capture = captures.find(c => String(c.id) === String(id));
+  // undefined = pas encore reçue, null = introuvable
+  const [capture, setCapture] = useState(undefined);
 
-  if (!capture) {
+  useEffect(() => {
+    lireCapture(id)
+      .then(setCapture)
+      .catch(() => setCapture(null));
+  }, [id]);
+
+  if (capture === undefined) {
+    return (
+      <View style={styles.vide}>
+        <ActivityIndicator size="large" color={couleurs.accent} />
+      </View>
+    );
+  }
+
+  if (capture === null) {
     return (
       <View style={styles.vide}>
         <Stack.Screen options={{ title: 'Introuvable' }} />

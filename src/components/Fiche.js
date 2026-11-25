@@ -2,12 +2,12 @@ import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { couleurs, espace, polices, rayon, tailles } from '../theme';
 import Pastille from './Pastille';
 
-// La fiche complète d'une capture : grande photo, catégorie, titre, lieu et date.
+// La fiche complète d'une capture : grande photo, catégorie, titre, lieu, date et auteur.
 const Fiche = ({ capture }) => {
   return (
     <ScrollView style={styles.ecran} contentContainerStyle={styles.contenu}>
       <View style={styles.cadre}>
-        <Image source={capture.image} style={styles.image} />
+        <Image source={capture.photo} style={styles.image} />
       </View>
 
       <Pastille categorie={capture.categorie} />
@@ -15,6 +15,7 @@ const Fiche = ({ capture }) => {
       <Text style={styles.infos}>
         {capture.lieu} · {capture.date}
       </Text>
+      <Text style={styles.infos}>Par {capture.auteur}</Text>
     </ScrollView>
   );
 };

@@ -53,3 +53,29 @@ Une entrée par séance. Quelques lignes par rubrique : des faits, pas des phras
 
 - À quoi sert exactement `asChild` sur le `Link`.
 - Pourquoi il faut `String()` pour comparer les numéros des captures.
+
+## Mardi 24 novembre 2026 (après-midi) - Jalon 3 : de vraies données
+
+### Ce que mon application fait de plus qu'au début de la séance
+
+- Les captures viennent maintenant du vrai serveur (l'API amorce), plus de captures.js. Quand j'ajoute une photo dans l'app amorce, elle apparaît dans la grille.
+- Pendant le chargement il y a une roue, et si le serveur ne répond pas il y a un message avec un bouton « Réessayer ».
+- La fiche montre la grande photo et « Par » avec le pseudo de l'auteur.
+- La barre du haut a les couleurs et la police du thème.
+
+### Ce que j'ai demandé à l'assistant
+
+(Le but que je lui ai donné, pas le texte mot pour mot.)
+
+- De taper le code de la page du cours et de m'expliquer le pourquoi de chaque étape, surtout src/api.js et les 3 états de la grille.
+- De trouver pourquoi « Réessayer » ne marchait pas sur mon téléphone.
+
+### Ce que j'ai corrigé ou refusé, et pourquoi
+
+- Pour tester l'écran d'erreur, j'ai cassé l'adresse du serveur exprès (/faux), puis je l'ai remise.
+- Le vrai problème venait d'Orange : leur filtre Mobile Serenity bloquait tout techniques-graphiques.be en 5G. Ce n'était pas mon code. Le prof a confirmé que c'était un faux positif.
+
+### Ce que je ne sais pas encore expliquer
+
+- Pourquoi on utilise `async` / `await` avec `fetch`.
+- La différence entre `undefined` et `null` dans la fiche.

@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { FlatList, StyleSheet } from 'react-native';
+import { ActivityIndicator, FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import { captures } from '../src/captures';
-import { couleurs, espace } from '../src/theme';
+import { lireCaptures } from '../src/api';
+import { couleurs, espace, polices, tailles } from '../src/theme';
 import Carte from '../src/components/Carte';
 import EnTete from '../src/components/EnTete';
 import Filtres from '../src/components/Filtres';
@@ -11,11 +11,50 @@ import Filtres from '../src/components/Filtres';
 export default function Grille() {
   // La catégorie choisie dans la barre des filtres : 'tout' au départ
   const [filtre, setFiltre] = useState('tout');
+  const [captures, setCaptures] = useState([]);
+  // 'chargement', 'erreur' ou 'pret'
+  const [etat, setEtat] = useState('chargement');
+
+  const charger = async () => {
+    setEtat('chargement');
+    try {
+      setCaptures(await lireCaptures());
+      setEtat('pret');
+    } catch (erreur) {
+      console.log('Erreur :', erreur.message);
+      setEtat('erreur');
+    }
+  };
+
+  // Une seule fois, à l'ouverture de l'écran
+  useEffect(() => {
+    charger();
+  }, []);
 
   // Les captures à afficher : toutes, ou celles de la catégorie choisie
   const visibles = filtre === 'tout'
     ? captures
     : captures.filter(capture => capture.categorie === filtre);
+
+  if (etat === 'chargement') {
+    return (
+      <View style={styles.centre}>
+        <ActivityIndicator size="large" color={couleurs.accent} />
+        <Text style={styles.message}>Chargement des captures...</Text>
+      </View>
+    );
+  }
+
+  if (etat === 'erreur') {
+    return (
+      <View style={styles.centre}>
+        <Text style={styles.message}>Impossible de charger les captures.</Text>
+        <Pressable style={styles.bouton} onPress={charger}>
+          <Text style={styles.texteBouton}>Réessayer</Text>
+        </Pressable>
+      </View>
+    );
+  }
 
   return (
     <SafeAreaProvider>
@@ -31,6 +70,9 @@ export default function Grille() {
               <EnTete nombre={visibles.length} />
               <Filtres actif={filtre} onChoisir={setFiltre} />
             </>
+          }
+          ListEmptyComponent={
+            <Text style={styles.message}>Aucune capture dans cette catégorie.</Text>
           }
           renderItem={({ item }) => <Carte capture={item} />}
         />
@@ -52,5 +94,30 @@ const styles = StyleSheet.create({
   },
   ligne: {
     justifyContent: 'space-between',
+  },
+  centre: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: espace.m,
+    padding: espace.m,
+    backgroundColor: couleurs.fond,
+  },
+  message: {
+    color: couleurs.texteDoux,
+    fontFamily: polices.texte,
+    fontSize: tailles.texte,
+    textAlign: 'center',
+  },
+  bouton: {
+    paddingVertical: espace.s,
+    paddingHorizontal: espace.m,
+    borderRadius: 999,
+    backgroundColor: couleurs.accent,
+  },
+  texteBouton: {
+    color: couleurs.surface,
+    fontFamily: polices.texteGras,
+    fontSize: tailles.texte,
   },
 });
